@@ -1,49 +1,41 @@
 #include<stdio.h>
 #include<stdlib.h>
+typedef struct Arrays{
+	int* array;
+	int size;
+	int filled;
+}Array;
 
-int* arr;
-int size = 1;
-int elements = 0;
-
-void init(){
-	arr = malloc(size*sizeof(int));
-	for(int i=0;i<size;i++){
-		*(arr+i)=0;
-	}	
+void creat(Array* a,int size){
+	a->array = calloc(size,sizeof(int));
+	a->size = size;
+	a->filled = 0;
 }
 
-void add(int element){
-	//check if array is full
-	if(elements == size){
-		size++; 
-		int* arr_ = malloc(size*sizeof(int)); // creat new array with extended size
-		//migrating old array to newly allocated array
-		for(int i=0; i<size-1;i++){
-			*(arr_+i) = *(arr+i);
-		}
-		//swaping pointers
-		int* tmp;
-		tmp = arr_;
-		arr_ = arr;
-		arr = tmp;
-		free(arr_);
-		*(arr+elements) = element; //adding the new element
-	}else{
-		*(arr+elements) = element;
+void add(Array* a,int element){
+	if(a->filled == a->size){
+		(a->size)++;
+		a->array = realloc(a->array,a->size*sizeof(int));
 	}
-	elements++;
+	a->array[(a->filled)++] = element;
 }
+
 
 int main(){
 	printf("| Demo dynamic array using C |\n");
-	init();
-	add(1);
-	add(2);
-	add(3);
-	add(4);
-	add(5);
-	for(int i=0;i<size;i++){
-		printf("%d\n",*(arr+i));
+	/*Testing*/
+	Array a;
+	creat(&a,1);
+	printf("oringinal size : %d\n",a.size);
+	for(int i=0;i<20;i++){
+		add(&a,i);
 	}
+
+	printf("new size : %d\nArray elements: ",a.size);
+	
+	for(int i=0;i<a.size;i++){
+		printf("%d ",(a.array)[i]);
+	}
+	printf("\n");
 	return 0;
 }
